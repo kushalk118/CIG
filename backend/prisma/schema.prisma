@@ -1,0 +1,106 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 Int            @id @default(autoincrement())
+  email              String         @unique
+  password           String
+  name               String
+  role               String         @default("VIEWER") // ADMIN, PHOTOGRAPHER, CLUB_MEMBER, VIEWER
+  avatarUrl          String?
+  referenceSelfieUrl String?        // URL of selfie image for facial recognition
+  createdAt          DateTime       @default(now())
+  
+  // Relations
+  eventsCreated      Event[]        @relation("EventCreator")
+  mediaUploaded      Media[]        @relation("MediaUploader")
+  likes              Like[]
+  comments           Comment[]
+  notifications      Notification[] @relation("NotificationRecipient")
+  triggeredNotifications Notification[] @relation("NotificationTriggerer")
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  date        DateTime @default(now())
+  category    String   // e.g. workshop, photoshoot, trip, party, fest
+  isPrivate   Boolean  @default(false)
+  clubName    String   @default("CIG")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  creatorId   Int
+  creator     User     @relation("EventCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  mediaItems  Media[]
+}
+
+model Media {
+  id           Int            @id @default(autoincrement())
+  filename     String
+  fileUrl      String
+  fileType     String         // e.g. "image/jpeg", "video/mp4"
+  size         Int
+  isPrivate    Boolean        @default(false)
+  tags         String         // Comma separated or JSON string of tags (e.g. "mountains,beach")
+  faceMarkers  String?        // JSON string of facial recognition bounding boxes and descriptors
+  uploadDate   DateTime       @default(now())
+  
+  // Relations
+  eventId      Int
+  event        Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  uploaderId   Int
+  uploader     User           @relation("MediaUploader", fields: [uploaderId], references: [id], onDelete: Cascade)
+  likes        Like[]
+  comments     Comment[]
+  notifications Notification[]
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  
+  // Relations
+  mediaId   Int
+  media     Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([mediaId, userId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  
+  // Relations
+  mediaId   Int
+  media     Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id            Int      @id @default(autoincrement())
+  type          String   // LIKE, COMMENT, TAG
+  message       String
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  
+  // Relations
+  userId        Int      // Recipient user
+  user          User     @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  triggerUserId Int      // User who caused the notification
+  triggerUser   User     @relation("NotificationTriggerer", fields: [triggerUserId], references: [id], onDelete: Cascade)
+  mediaId       Int?     // Linked media, if applicable
+  media         Media?   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+}
