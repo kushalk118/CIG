@@ -121,17 +121,7 @@ export default function FaceRecognition({ user, onUpdateSelfie }) {
       
       // 4. Save selfie reference to backend profile if newly uploaded
       if (selfieFile) {
-        // Upload selfie image
-        const formData = new FormData();
-        formData.append('files', selfieFile);
-        formData.append('eventId', '1'); // temp event id mapping
-        
-        const uploadRes = await api.upload('/media/upload', formData);
-        if (uploadRes.success && uploadRes.media && uploadRes.media.length > 0) {
-          const selfieUrl = uploadRes.media[0].fileUrl;
-          await api.post('/auth/selfie', { referenceSelfieUrl: selfieUrl });
-          onUpdateSelfie(selfieUrl);
-        }
+         onUpdateSelfie(selfiePreview);
       }
 
     } catch (err) {
