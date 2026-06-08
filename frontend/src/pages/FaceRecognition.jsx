@@ -103,9 +103,11 @@ export default function FaceRecognition({ user, onUpdateSelfie }) {
 
             // Compute distance
             const distance = faceapi.euclideanDistance(selfieDescriptor, marker.descriptor);
-            
+             console.log("Distance:", distance);
+             console.log("Media ID:", item.id);
+             console.log("Filename:", item.filename);
             // Euclidean distance threshold (typically < 0.6 is a match)
-            if (distance < 0.55) {
+            if (distance < 0.75) {
               matches.push(item);
               break; // match found in this image, move to next image
             }
