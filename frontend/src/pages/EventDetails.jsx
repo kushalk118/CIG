@@ -31,7 +31,7 @@ export default function EventDetails({ eventId, user, onBack }) {
     setUploadProgress('Loading AI Face Models (TinyFaceDetector, Landmarks, Recognition)...');
     try {
       // Load weights from stable CDN
-      const MODEL_URL = 'https://cdn.jsdelivr.net/gh/carlosgestosa/face-api.js-models@master/';
+      const MODEL_URL = '/models';
       await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
       await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
       await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
