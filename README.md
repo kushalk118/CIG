@@ -3,6 +3,8 @@
 A centralized, full-stack, and high-performance **Event & Media Management Platform** built for clubs, photographers, and members to seamlessly organize, secure, access, and interact with event media.
 
 ---
+LIVE DEPLOYMET LINK-
+https://cig-725y.vercel.app/
 
 ## 🚀 Key Features
 
