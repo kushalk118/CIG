@@ -318,6 +318,9 @@ router.get('/:id/download', async (req, res) => {
     } else {
       // For S3 or external URL, we would download to temp first.
       // If we cannot download or it's not local, we redirect to the file url.
+      console.log("S3 FILE DETECTED");
+      console.log(media.fileUrl);
+
       return res.redirect(media.fileUrl);
     }
 
@@ -370,6 +373,7 @@ router.get('/:id/download', async (req, res) => {
     // If watermark fails, redirect to direct file url
     const media = await prisma.media.findUnique({ where: { id: mediaId } });
     if (media) {
+
       return res.redirect(media.fileUrl);
     }
     res.status(500).json({ error: 'Download failed: ' + error.message });
