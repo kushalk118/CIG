@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = 'https://cig-xiby.onrender.com';
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');
@@ -58,12 +58,12 @@ export const api = {
 
   downloadUrl: (mediaId) => {
     const token = localStorage.getItem('token') || '';
-    return `http://localhost:5000/api/media/${mediaId}/download?token=${token}`;
+    return `https://cig-xiby.onrender.com/api/media/${mediaId}/download?token=${token}`;
   },
 
   mediaUrl: (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:5000${url}`;
+    return `https://cig-xiby.onrender.com${url}`;
   }
 };
