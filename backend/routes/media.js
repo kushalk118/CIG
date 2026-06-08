@@ -321,7 +321,9 @@ router.get('/:id/download', async (req, res) => {
       console.log("S3 FILE DETECTED");
       console.log(media.fileUrl);
 
-      return res.redirect(media.fileUrl);
+      return res.redirect(
+        `${media.fileUrl}?response-content-disposition=attachment`
+      );
     }
 
     if (!fs.existsSync(imagePath)) {
@@ -374,7 +376,9 @@ router.get('/:id/download', async (req, res) => {
     const media = await prisma.media.findUnique({ where: { id: mediaId } });
     if (media) {
 
-      return res.redirect(media.fileUrl);
+      return res.redirect(
+          `${media.fileUrl}?response-content-disposition=attachment`
+      );
     }
     res.status(500).json({ error: 'Download failed: ' + error.message });
   }
