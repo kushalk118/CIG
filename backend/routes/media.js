@@ -324,17 +324,69 @@ router.get('/:id/download', async (req, res) => {
     response.on('data', (chunk) => chunks.push(chunk));
 
     response.on('end', async () => {
-      const imageBuffer = Buffer.concat(chunks);
+  const sharp = require('sharp');
 
-      res.setHeader(
-        'Content-Disposition',
-        `attachment; filename="watermarked_${media.filename}"`
-      );
+  const imageBuffer = Buffer.concat(chunks);
 
-      res.setHeader('Content-Type', media.fileType);
+  const metadata = await sharp(imageBuffer).metadata();
 
-      res.end(imageBuffer);
-    });
+  const width = metadata.width || 800;
+  const height = metadata.height || 600;
+  const fontSize = Math.max(16, Math.floor(width / 35));
+
+  const svgText = `
+    <svg width="${width}" height="${height}">
+      <style>
+        .watermark {
+          fill: rgba(255,255,255,0.4);
+          font-size: ${fontSize}px;
+          font-family: Arial;
+          font-weight: bold;
+        }
+        .bg {
+          fill: rgba(0,0,0,0.25);
+        }
+      </style>
+
+      <rect
+        x="0"
+        y="${height - fontSize * 2.5}"
+        width="${width}"
+        height="${fontSize * 2.5}"
+        class="bg"
+      />
+
+      <text
+        x="50%"
+        y="${height - fontSize}"
+        text-anchor="middle"
+        class="watermark"
+      >
+        ${watermarkText}
+      </text>
+    </svg>
+  `;
+
+  const watermarkedBuffer = await sharp(imageBuffer)
+    .composite([
+      {
+        input: Buffer.from(svgText),
+        top: 0,
+        left: 0
+      }
+    ])
+    .png()
+    .toBuffer();
+
+  res.setHeader(
+    'Content-Disposition',
+    `attachment; filename="watermarked_${media.filename}"`
+  );
+
+  res.setHeader('Content-Type', 'image/png');
+
+  res.end(watermarkedBuffer);
+});
   });
 
   return;
