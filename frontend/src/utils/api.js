@@ -1,4 +1,4 @@
-const BASE_URL = 'https://cig-xiby.onrender.com';
+const BASE_URL = 'https://cig-xiby.onrender.com/api';
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');
