@@ -316,15 +316,29 @@ router.get('/:id/download', async (req, res) => {
     if (isLocal) {
       imagePath = path.join(__dirname, '..', media.fileUrl);
     } else {
-      // For S3 or external URL, we would download to temp first.
-      // If we cannot download or it's not local, we redirect to the file url.
-      console.log("S3 FILE DETECTED");
-      console.log(media.fileUrl);
+  const https = require('https');
 
-      return res.redirect(
-        `${media.fileUrl}?response-content-disposition=attachment`
+  https.get(media.fileUrl, (response) => {
+    const chunks = [];
+
+    response.on('data', (chunk) => chunks.push(chunk));
+
+    response.on('end', async () => {
+      const imageBuffer = Buffer.concat(chunks);
+
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="watermarked_${media.filename}"`
       );
-    }
+
+      res.setHeader('Content-Type', media.fileType);
+
+      res.end(imageBuffer);
+    });
+  });
+
+  return;
+}
 
     if (!fs.existsSync(imagePath)) {
       return res.status(404).json({ error: 'Original file not found on server' });
@@ -376,9 +390,7 @@ router.get('/:id/download', async (req, res) => {
     const media = await prisma.media.findUnique({ where: { id: mediaId } });
     if (media) {
 
-      return res.redirect(
-          `${media.fileUrl}?response-content-disposition=attachment`
-      );
+      return res.redirect(media.fileUrl);
     }
     res.status(500).json({ error: 'Download failed: ' + error.message });
   }
