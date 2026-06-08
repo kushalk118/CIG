@@ -24,7 +24,7 @@ export default function Sidebar({ user, onLogout }) {
     fetchNotifications();
 
     // Setup Socket.io for real-time notifications
-    const socket = io('http://localhost:5000');
+    const socket = io('https://cig-xiby.onrender.com');
     socket.emit('join', user.id);
 
     socket.on('notification', () => {

@@ -26,7 +26,7 @@ export default function FaceRecognition({ user, onUpdateSelfie }) {
     setModelsLoading(true);
     setStatus('Loading AI face models...');
     try {
-      const MODEL_URL = 'https://cdn.jsdelivr.net/gh/carlosgestosa/face-api.js-models@master/';
+      const MODEL_URL = '/models';
       await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
       await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
       await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
