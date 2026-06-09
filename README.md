@@ -25,7 +25,7 @@ https://cig-725y.vercel.app/
 - **Database**: SQLite + Prisma ORM (for local, zero-setup relational storage)
 - **ML / AI**: `@vladmandic/face-api` (TinyFaceDetector, FaceLandmarks, FaceRecognition)
 - **Image Processing**: `sharp` (Express-side dynamic SVG compositor)
-
+- **Cloud Integration**:AWS S3
 ---
 
 ## 📂 Project Structure
