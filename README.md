@@ -165,7 +165,7 @@ erDiagram
    ```bash
    npm start
    ```
-   *The backend starts on `http://localhost:5000` and automatically seeds four default test users and sample events.*
+   *The backend starts on `https://cig-xiby.onrender.com` and automatically seeds four default test users and sample events.*
 
 ### 2. Frontend Configuration
 1. Navigate to the frontend directory:
@@ -180,7 +180,7 @@ erDiagram
    ```bash
    npm run dev
    ```
-   *The frontend starts on `http://localhost:5173`.*
+   *The frontend starts on `https://cig-725y.vercel.app/`.*
 
 ---
 
